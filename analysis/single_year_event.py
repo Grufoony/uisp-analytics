@@ -255,10 +255,10 @@ def main():
         categories = ["R14", "R", "J", "A"]
 
     plt.figure(figsize=(10, 6))
-    male_counts = [data["category_counts"][decade]["M"] for decade in categories]
-    female_counts = [data["category_counts"][decade]["F"] for decade in categories]
+    male_counts = [data["category_counts"][category]["M"] for category in categories]
+    female_counts = [data["category_counts"][category]["F"] for category in categories]
 
-    x = np.arange(len(categories))  # numeric positions for each decade
+    x = np.arange(len(categories))  # numeric positions for each category
     width = 0.4  # width of each bar
 
     plt.bar(x - width / 2, male_counts, width=width, label="Male", alpha=0.7)
@@ -266,20 +266,20 @@ def main():
 
     plt.xlabel("Category")
     plt.ylabel("Number of Athletes")
-    plt.xticks(x, categories)  # put decade labels back on the ticks
+    plt.xticks(x, categories)  # put category labels back on the ticks
     plt.title(f"{EVENT_NAME}")
     plt.legend(loc="upper left")
     plt.grid(ls="--", alpha=0.5)
     plt.tight_layout()
     plt.savefig(OUTPUT_FOLDER / f"{args.event}_{args.year}_category.pdf")
 
-    # Plot also the distribution of the sum of male + female athletes per decade
+    # Plot also the distribution of the sum of male + female athletes per category
     total_counts = [male + female for male, female in zip(male_counts, female_counts)]
     plt.figure(figsize=(10, 6))
     plt.bar(x, total_counts, width=width, color="gray", alpha=0.7)
-    plt.xlabel("Decade of Birth")
+    plt.xlabel("Category")
     plt.ylabel("Total Number of Athletes")
-    plt.xticks(x, categories)  # put decade labels back on the ticks
+    plt.xticks(x, categories)  # put category labels back on the ticks
     plt.title(f"{EVENT_NAME}")
     plt.grid(ls="--", alpha=0.5)
     plt.tight_layout()
