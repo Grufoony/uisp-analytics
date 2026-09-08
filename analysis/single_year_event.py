@@ -19,6 +19,7 @@ UNIQUE_ATHLETES_IDENTIFIERS = [
     "Fullname",
     "Sex",
     "BirthYear",
+    "CategoryId",
 ]
 
 
@@ -186,7 +187,7 @@ def main():
 
     ALL_ATHLETES_DF = (
         df.filter(pl.col("AthleteId").is_not_null())
-        .select(UNIQUE_ATHLETES_IDENTIFIERS + ["CategoryId"])
+        .select(UNIQUE_ATHLETES_IDENTIFIERS)
         .unique()
     )
 
@@ -202,36 +203,14 @@ def main():
     # Make a plot of the number of unique athletes per stage
     plt.figure(figsize=(10, 6))
     stages = sorted(df.select("Stage").unique().to_series().to_list())
-    n_unique_athletes_per_stage = [d["n_unique_athletes"] for d in data]
-    n_unique_male_athletes_per_stage = [d["n_unique_male_athletes"] for d in data]
-    n_unique_female_athletes_per_stage = [d["n_unique_female_athletes"] for d in data]
-    n_unique_relayteamids_per_stage = [d["n_unique_relayteamids"] for d in data]
-    n_unique_relay_team_subtitle_athletes_per_stage = [
-        d["n_unique_relay_team_subtitle_athletes"] for d in data
-    ]
-
-    # Add n_unique_athletes_per_stage and n_unique_relay_team_subtitle_athletes_per_stage to the plot
-    n_unique_athletes_per_stage = [
-        a + b
-        for a, b in zip(
-            n_unique_athletes_per_stage, n_unique_relay_team_subtitle_athletes_per_stage
-        )
-    ]
-
-    n_additional_male_per_stage = [d["n_additional_male"] for d in data]
-    n_additional_female_per_stage = [d["n_additional_female"] for d in data]
-
-    # Add to the unique one
+    n_unique_athletes_per_stage = [d["n_unique_athletes_corrected"] for d in data]
     n_unique_male_athletes_per_stage = [
-        a + b
-        for a, b in zip(n_unique_male_athletes_per_stage, n_additional_male_per_stage)
+        d["n_unique_male_athletes_corrected"] for d in data
     ]
     n_unique_female_athletes_per_stage = [
-        a + b
-        for a, b in zip(
-            n_unique_female_athletes_per_stage, n_additional_female_per_stage
-        )
+        d["n_unique_female_athletes_corrected"] for d in data
     ]
+    n_unique_relayteamids_per_stage = [d["n_unique_relayteamids"] for d in data]
 
     plt.plot(
         stages, n_unique_athletes_per_stage, label="Total Unique Athletes", marker="o"
@@ -254,7 +233,7 @@ def main():
     plt.xlabel("Stage")
     # Show only integer ticks on the x-axis
     plt.xticks(range(1, len(stages) + 1), stages)
-    plt.ylabel("Number (a.u.)")
+    plt.ylabel("Count")
     plt.grid(ls="--", alpha=0.5)
     ymax = max(max(n_unique_athletes_per_stage), max(n_unique_relayteamids_per_stage))
     plt.ylim(top=ymax * 1.25)
