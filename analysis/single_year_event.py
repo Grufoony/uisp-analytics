@@ -232,7 +232,7 @@ def main():
     )
     plt.xlabel("Stage")
     # Show only integer ticks on the x-axis
-    plt.xticks(range(1, len(stages) + 1), stages)
+    plt.xticks(range(min(stages), len(stages) + min(stages)), stages)
     plt.ylabel("Count")
     plt.grid(ls="--", alpha=0.5)
     ymax = max(max(n_unique_athletes_per_stage), max(n_unique_relayteamids_per_stage))
